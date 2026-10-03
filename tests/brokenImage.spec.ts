@@ -1,8 +1,6 @@
 import { test, expect } from '@playwright/test';
 
 test('verify broken image', async ({ page }) => {
-    test.setTimeout(60000);
-
     await page.goto('https://the-internet.herokuapp.com/broken_images');
 
     const images = await page.locator('img').evaluateAll((nodes) =>
@@ -17,10 +15,7 @@ test('verify broken image', async ({ page }) => {
 
     for (const src of images) {
         const absoluteUrl = new URL(src, page.url()).toString();
-        const res = await page.request.get(absoluteUrl, {
-            timeout: 15000,
-            failOnStatusCode: false,
-        });
+        const res = await page.request.get(absoluteUrl, { failOnStatusCode: false });
         results.push({ src, status: res.status() });
         console.log(`Image src: ${src} -> ${res.status()}`);
     }
